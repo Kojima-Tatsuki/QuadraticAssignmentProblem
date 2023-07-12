@@ -37,5 +37,27 @@
 ```
 ![qap_fig](https://neos-guide.org/wp-content/uploads/2022/05/qap.png)
 
+## 例2
+
+Distance Matrix
+|   |A   |B  |C   |D|
+|:--:|:--|:--|:--|:--|
+|A  |0   |22 |53	|53|
+|B  |22  |0  |40	|62|
+|C  |53  |40 |0	  |55|
+|D  |53  |62 |55	|0|
+
+Flows
+|   |1	|2	|3	|4|
+|:--:|:--|:--|:--|:--|
+|1	|0	|3	|0	|2|
+|2	|3	|0	|0	|1|
+|3	|0	|0	|0	|4|
+|4	|2	|1	|4	|0|
+
+### 最適解
+$q = \\{3, 4, 1, 2\\}$, $score = 395$  
+$f(3,4)d(1,2) + $
+
 # 参考文献
 1. Quadratic Assignment Problem, https://neos-guide.org/case-studies/sc/la/qap/
