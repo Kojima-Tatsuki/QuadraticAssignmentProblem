@@ -57,7 +57,9 @@ Flows
 
 ### 最適解
 $q = \\{3, 4, 1, 2\\}$, $score = 395$  
-$f(3,4)d(1,2) + $
+$f(C,D)d(1,2) + f(C,B)d(1,4) + f(D,B)d(2,4) + f(A,B)d(3,4)$  
+$=55 * 3 + 40 * 2 + 62 * 1 + 22 * 4$  
+$=165 + 80 + 62 + 88 = 395$
 
 # 参考文献
 1. Quadratic Assignment Problem, https://neos-guide.org/case-studies/sc/la/qap/
