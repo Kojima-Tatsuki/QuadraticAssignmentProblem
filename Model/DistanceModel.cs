@@ -17,7 +17,5 @@ namespace QAP.Model
         }
 
         public DistanceModel(in double[,] array) : this(new Matrix(array)) { }
-
-
     }
 }

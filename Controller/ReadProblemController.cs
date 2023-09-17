@@ -1,5 +1,4 @@
 ﻿using QAP.Model;
-using System.Security.Cryptography.X509Certificates;
 
 namespace QAP.Controller
 {
@@ -27,7 +26,7 @@ namespace QAP.Controller
 
                 Console.WriteLine(dirPath + path + ", " + str);
 
-                ProblemModel model = null; // new ProblemModel(null, null);
+                var model = ProblemSeparator.ToModel(str);
                 result.Add(model);
             }
 

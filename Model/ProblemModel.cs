@@ -8,13 +8,13 @@ namespace QAP.Model
 {
     internal class ProblemModel
     {
-        private List<DistanceModel> Factories { get; init; }
-        private List<FlowModel> Flows { get; init; }
+        private DistanceModel Factory { get; init; }
+        private FlowModel Flow { get; init; }
 
-        public ProblemModel(IReadOnlyList<DistanceModel> factories, IReadOnlyList<FlowModel> flows)
+        public ProblemModel(DistanceModel factoy, FlowModel flow)
         {
-            Factories = factories.ToList();
-            Flows = flows.ToList();
+            Factory = factoy;
+            Flow = flow;
         }
 
         public int GetScore()
