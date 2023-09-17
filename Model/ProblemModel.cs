@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace QAP.Model
 {
-    internal class ProbremModel
+    internal class ProblemModel
     {
         private List<DistanceModel> Factories { get; init; }
         private List<FlowModel> Flows { get; init; }
 
-        public ProbremModel(IReadOnlyList<DistanceModel> factories, IReadOnlyList<FlowModel> flows)
+        public ProblemModel(IReadOnlyList<DistanceModel> factories, IReadOnlyList<FlowModel> flows)
         {
             Factories = factories.ToList();
             Flows = flows.ToList();
