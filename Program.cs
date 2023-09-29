@@ -9,3 +9,5 @@ var controller = new ReadProblemController(parentPath + "/Problems/");
 var problems = controller.ReadProblems();
 
 Console.WriteLine(problems.Count);
+
+Console.WriteLine(problems[0].GetScore(new List<int> { 0, 1, 2, 3 }));

@@ -35,7 +35,7 @@ namespace QAP.Controller
 
         private string[] GetPathTobeRead(ProblemType? problemType = null)
         {
-            return new string[] { "nug12.dat" };
+            return new string[] { "smp4.dat" };
         }
 
         public class ProblemType
