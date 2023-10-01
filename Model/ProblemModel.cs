@@ -22,22 +22,25 @@ namespace QAP.Model
         {
             // sum(f[i,j]*d[k,l]*x[i,k]*x[j,l],(i,j,k,l));
 
+            // F * X D X^Y
+
             var x = IndexMatrixFromList(indexList);
 
-            var xe1 = x * new Matrix(new double[,] { { 1, 1, 1, 1}, { 1, 1, 1, 1}, { 1, 1, 1, 1}, { 1, 1, 1, 1} });
-            var xe2 = x.Transpose() * new Matrix(new double[,] { { 1, 1, 1, 1}, { 1, 1, 1, 1}, { 1, 1, 1, 1}, { 1, 1, 1, 1} });
- 
             var res = x * Factory.DistanceMatrix * x.Transpose();
 
             return sum(Flow.DistanceMatrix, res);
-
-            // throw new NotImplementedException();
         }
 
         private Matrix IndexMatrixFromList(IReadOnlyList<int> list)
         {
-            return new Matrix(new double[,] { { 1, 0, 0, 0 }, { 0, 0, 1, 0 }, { 0, 1, 0, 0 }, { 0, 0, 0, 1 } });
-            // throw new NotImplementedException();
+            double[,] matrix = new double[list.Count, list.Count];
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                matrix[list[i] - 1, i] = 1;
+            }
+
+            return new Matrix(matrix);
         }
 
         private double sum(Matrix x, Matrix y)

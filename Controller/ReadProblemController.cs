@@ -24,7 +24,7 @@ namespace QAP.Controller
 
                 var str = sr.ReadToEnd();
 
-                Console.WriteLine(dirPath + path + ", " + str);
+                Console.WriteLine("Problem read completed.\n" + "File Path: " + dirPath + path + "\n" + str);
 
                 var model = ProblemSeparator.ToModel(str);
                 result.Add(model);
