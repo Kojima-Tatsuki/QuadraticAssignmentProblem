@@ -4,21 +4,21 @@
     {
         public ProblemModel Problem { get; init; }
 
-        public SearchResult Search(IReadOnlyList<int> initAns);
+        public SearchResult Search(IReadOnlyList<int> initOrder);
     }
 
     internal record SearchResult
     {
-        public IReadOnlyList<int> InitAns { get; init; }
-        public IReadOnlyList<int> Ans { get; init; }
-        public int Score { get; init; }
+        public IReadOnlyList<int> InitOrder { get; init; }
+        public IReadOnlyList<int> BestOrder { get; init; }
+        public int BestScore { get; init; }
         public ProblemModel Problem { get; init; }
 
-        public SearchResult(IReadOnlyList<int> initAns, IReadOnlyList<int> ans, int score, ProblemModel problem)
+        public SearchResult(IReadOnlyList<int> initOrder, IReadOnlyList<int> bestOrder, int bestScore, ProblemModel problem)
         {
-            InitAns = initAns;
-            Ans = ans;
-            Score = score;
+            InitOrder = initOrder;
+            BestOrder = bestOrder;
+            BestScore = bestScore;
             Problem = problem;
         }
     }

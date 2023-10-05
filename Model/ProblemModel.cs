@@ -18,7 +18,7 @@ namespace QAP.Model
             Flow = flow;
         }
 
-        public double GetScore(IReadOnlyList<int> indexList)
+        public int GetScore(IReadOnlyList<int> indexList)
         {
             // sum(f[i,j]*d[k,l]*x[i,k]*x[j,l],(i,j,k,l));
 
@@ -28,7 +28,7 @@ namespace QAP.Model
 
             var res = x * Factory.DistanceMatrix * x.Transpose();
 
-            return sum(Flow.DistanceMatrix, res);
+            return (int)sum(Flow.DistanceMatrix, res) / 2;
         }
 
         private Matrix IndexMatrixFromList(IReadOnlyList<int> list)
