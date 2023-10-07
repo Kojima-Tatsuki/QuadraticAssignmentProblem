@@ -28,3 +28,9 @@ var tabuResult = tabu.Search(initOrder);
 
 Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
 Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
+
+var rpns = new RandomPartialNeighborhoodSearch(problems[0], TimeSpan.FromSeconds(3));
+var rpnsResult = rpns.Search(initOrder);
+
+Console.WriteLine("Tabu ResultScore: " + rpnsResult.BestScore);
+Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", rpnsResult.BestOrder));
