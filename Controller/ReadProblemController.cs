@@ -11,7 +11,7 @@ namespace QAP.Controller
             this.dirPath = dirPath;
         }
 
-        public IReadOnlyList<ProblemModel> ReadProblems(ProblemType? problemType = null)
+        public IReadOnlyList<ProblemModel> ReadProblems(ProblemInfo? problemType = null)
         {
             // ファイル名は " 問題名 + 問題サイズ + 問題番号 " で表されている
 
@@ -33,21 +33,23 @@ namespace QAP.Controller
             return result;
         }
 
-        private string[] GetPathTobeRead(ProblemType? problemType = null)
+        private string[] GetPathTobeRead(ProblemInfo? problemType = null)
         {
             return new string[] { "smp4.dat" };
         }
+    }
 
-        public class ProblemType
+    internal class ProblemInfo
+    {
+        public string ProblemName { get; init; } // bur, chr, els, ...
+        public int ProblemSize { get; init; } // 4, 5, 6, ...
+        public char? ProblemNumber { get; init; } // a, b, c, ...
+
+        public ProblemInfo(string problemName, int problemSize, char? problemNumber = null)
         {
-            public string? ProblemName { get; init; } // bur, chr, els, ...
-            public char? ProblemNumber { get; init; } // a, b, c, ...
-
-            public ProblemType(string? problemName = null, char? problemNumber = null)
-            {
-                ProblemName = problemName;
-                ProblemNumber = problemNumber;
-            }
+            ProblemName = problemName;
+            ProblemSize = problemSize;
+            ProblemNumber = problemNumber;
         }
     }
 }

@@ -1,13 +1,12 @@
 ﻿// See https://aka.ms/new-console-template for more information
-using QAP.Controller;
+using QAP.CharacterUserInterface;
 using QAP.Model.Search;
 
 // Console.WriteLine("Hello, World!");
 
-var parentPath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName ?? throw new Exception("パスの取得に失敗しました");
-var controller = new ReadProblemController(parentPath + "/Problems/");
+var selectProblemCUI = new SelectProblemCUI();
 
-var problems = controller.ReadProblems();
+var problems = await selectProblemCUI.ReadProblems();
 
 Console.WriteLine("Read problem count: " + problems.Count);
 
