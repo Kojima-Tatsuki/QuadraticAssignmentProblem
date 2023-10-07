@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tremendous1192.SelfEmployed.MatrixSharp;
+﻿using Tremendous1192.SelfEmployed.MatrixSharp;
 
 namespace QAP.Model
 {

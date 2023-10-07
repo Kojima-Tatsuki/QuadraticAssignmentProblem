@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace QAP.Model.Search
+﻿namespace QAP.Model.Search
 {
     internal class LocalSearch : ISearch
     {
@@ -25,7 +19,7 @@ namespace QAP.Model.Search
             {
                 var includeOptimal = IsIncludeMoreOptimal(bestOrder, bestScore);
 
-                Console.WriteLine("Score: " + includeOptimal.score + ", Order: " + string.Join(", ", includeOptimal.order));
+                // Console.WriteLine("Score: " + includeOptimal.score + ", Order: " + string.Join(", ", includeOptimal.order));
 
                 // 改善解が存在しない場合は、無意味な代入となる
                 loop = includeOptimal.isInclude;
