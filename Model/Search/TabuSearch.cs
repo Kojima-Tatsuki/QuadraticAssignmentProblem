@@ -23,7 +23,7 @@
 
             for (var iter = 0; iter < IterMax; iter++)
             {
-                var includeOptimal = IsIncludeMoreOptimal(currentOrder, currentScore, tabuList);
+                var includeOptimal = IsIncludeMoreOptimal(currentOrder, tabuList);
 
                 currentOrder = includeOptimal.order;
                 currentScore = includeOptimal.score;
@@ -44,7 +44,7 @@
         /// </summary>
         /// <param name="targetOrder"></param>
         /// <returns></returns>
-        private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, int targetScore, TabuList tabuList)
+        private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList)
         {
             // 近傍探索、タブーリストの更新
             var currentBestScore = -1;
@@ -79,12 +79,13 @@
                 }
             }
 
+            // 複数候補から1つ選んで改善解とする
             var resultOrder = currentBestOrder[new Random().Next(0, currentBestOrder.Count)];
             var resultTabuList = tabuList.AddTabuList(new Pair(resultOrder.i, resultOrder.k));
 
             return (currentBestScore, resultOrder.order, resultTabuList);
         }
-        
+
         private class TabuList
         {
             public int Length { get; init; }
@@ -93,7 +94,7 @@
             public TabuList(int orderLength)
             {
                 Length = (int)Math.Sqrt(orderLength); // 平方根を取る
-                IndexQueue = new Queue<int>(Length * 2);
+                IndexQueue = new Queue<int>(Length);
             }
 
             public TabuList AddTabuList(Pair pair)
@@ -120,16 +121,8 @@
 
             public Pair(int a, int b)
             {
-                if (a < b)
-                {
-                    First = a;
-                    Second = b;
-                }
-                else
-                {
-                    First = b;
-                    Second = a;
-                }
+                First = a;
+                Second = b;
             }
         }
     }
