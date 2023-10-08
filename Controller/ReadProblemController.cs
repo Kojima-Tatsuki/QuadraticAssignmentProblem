@@ -51,5 +51,11 @@ namespace QAP.Controller
             ProblemSize = problemSize;
             ProblemNumber = problemNumber;
         }
+
+        // .bat 付きファイル名
+        public string GetFileName()
+        {
+            return ProblemName + ProblemSize + ProblemNumber + ".bat";
+        }
     }
 }
