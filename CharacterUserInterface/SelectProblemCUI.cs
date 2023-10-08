@@ -15,11 +15,11 @@ namespace QAP.CharacterUserInterface
 
             var problemPattern = GetProblemPattern(files);
 
-            var _ = await SelectProblems(problemPattern); // 同期処理だが、かなり長い
+            var flattenProblems = await SelectProblems(problemPattern);
 
             var controller = new ReadProblemController(problemDirPath);
 
-            var problems = controller.ReadProblems();
+            var problems = controller.ReadProblems(flattenProblems);
 
             return problems;
         }
@@ -41,7 +41,7 @@ namespace QAP.CharacterUserInterface
                     var selected = selectedList.ContainsKey(key)? '*' : ' ';
 
                     if (i == selectIndex)
-                        Console.WriteLine($"- [{selected}] {key} {pattern[key].Count} {selectIndex}");
+                        Console.WriteLine($"- [{selected}] {key} {pattern[key].Count}");
                     else
                         Console.WriteLine($"  [{selected}] {key} {pattern[key].Count}");
                 }

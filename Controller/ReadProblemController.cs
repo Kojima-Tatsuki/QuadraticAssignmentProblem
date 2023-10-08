@@ -11,12 +11,12 @@ namespace QAP.Controller
             this.dirPath = dirPath;
         }
 
-        public IReadOnlyList<ProblemModel> ReadProblems(ProblemInfo? problemType = null)
+        public IReadOnlyList<ProblemModel> ReadProblems(IReadOnlyList<ProblemInfo> problemInfos)
         {
             // ファイル名は " 問題名 + 問題サイズ + 問題番号 " で表されている
 
-            var paths = GetPathTobeRead(problemType);
-            var result = new List<ProblemModel>(paths.Length);
+            var paths = GetPathTobeRead(problemInfos);
+            var result = new List<ProblemModel>(paths.Count);
 
             foreach (var path in paths)
             {
@@ -33,9 +33,9 @@ namespace QAP.Controller
             return result;
         }
 
-        private string[] GetPathTobeRead(ProblemInfo? problemType = null)
+        private IReadOnlyList<string> GetPathTobeRead(IReadOnlyList<ProblemInfo> problemInfos)
         {
-            return new string[] { "smp4.dat" };
+            return problemInfos.Select(problemInfos => problemInfos.GetFileName()).ToList();
         }
     }
 
@@ -55,7 +55,7 @@ namespace QAP.Controller
         // .bat 付きファイル名
         public string GetFileName()
         {
-            return ProblemName + ProblemSize + ProblemNumber + ".bat";
+            return ProblemName + ProblemSize + ProblemNumber + ".dat";
         }
     }
 }
