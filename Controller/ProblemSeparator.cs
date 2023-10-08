@@ -1,10 +1,5 @@
 ﻿using QAP.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace QAP.Controller
 {
@@ -22,7 +17,6 @@ namespace QAP.Controller
 
             // 改行又は空白で分割して、int 配列へ変換する
             var lines = Regex.Replace(text, "[ ]+", " ", RegexOptions.Multiline).Split(' ');
-            // "  130" のような空白がある場合があるので、空白を削除してから変換する
             var nums = lines.Where(x => x != "").Select(int.Parse)
                 .ToArray();
 
