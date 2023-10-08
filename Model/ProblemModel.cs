@@ -13,6 +13,8 @@ namespace QAP.Model
             Flow = flow;
         }
 
+        public int GetProblemSize() => Factory.DistanceMatrix.Column;
+
         public int GetScore(IReadOnlyList<int> indexList)
         {
             // sum(f[i,j]*d[k,l]*x[i,k]*x[j,l],(i,j,k,l));
@@ -50,6 +52,23 @@ namespace QAP.Model
                 }
             }
             return res;
+        }
+
+        public IReadOnlyList<int> GetRandomInitOrder()
+        {
+            var initOrder = Enumerable.Range(1, GetProblemSize()).ToList();
+
+            // Fisher-Yatesアルゴリズム
+            var random = new Random();
+            for (int i = initOrder.Count - 1; 0 <= i; i--)
+            {
+                int k = random.Next(i + 1);
+                var tmp = initOrder[k];
+                initOrder[k] = initOrder[i];
+                initOrder[i] = tmp;
+            }
+
+            return initOrder;
         }
     }
 }

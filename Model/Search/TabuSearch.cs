@@ -9,7 +9,7 @@
         public TabuSearch(ProblemModel problem)
         {
             Problem = problem;
-            IterMax = 5;
+            IterMax = 200;
         }
 
         public SearchResult Search(IReadOnlyList<int> initOrder)

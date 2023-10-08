@@ -1,10 +1,5 @@
 ﻿using QAP.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace QAP.Controller
 {
@@ -17,13 +12,12 @@ namespace QAP.Controller
         // [流量配列]
         public static ProblemModel ToModel(string text)
         {
-            text = Regex.Replace(text, "^[\r\n]+", string.Empty, RegexOptions.Multiline); // 先頭の改行を削除
+            text = text.Replace("\r\n", "\n").Replace("\r", "\n"); // 改行コードを統一
+            text = Regex.Replace(text, "[\n]+", " ", RegexOptions.Multiline); // 連続する改行を1つの空白に変換
 
             // 改行又は空白で分割して、int 配列へ変換する
-            var lines = text.Trim()
-                .Replace("  ", " ")
-                .Split('\n', ' ');
-            var nums = lines.Select(int.Parse)
+            var lines = Regex.Replace(text, "[ ]+", " ", RegexOptions.Multiline).Split(' ');
+            var nums = lines.Where(x => x != "").Select(int.Parse)
                 .ToArray();
 
             var length = nums[0]; // 配列の要素数            
