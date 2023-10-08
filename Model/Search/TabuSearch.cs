@@ -80,7 +80,8 @@
             }
 
             // 複数候補から1つ選んで改善解とする
-            var resultOrder = currentBestOrder[new Random().Next(0, currentBestOrder.Count)];
+            var index = new Random().Next(0, currentBestOrder.Count);
+            var resultOrder = currentBestOrder[index];
             var resultTabuList = tabuList.AddTabuList(new Pair(resultOrder.i, resultOrder.k));
 
             return (currentBestScore, resultOrder.order, resultTabuList);
@@ -99,7 +100,7 @@
 
             public TabuList AddTabuList(Pair pair)
             {
-                if (IndexQueue.Count == Length)
+                if (IndexQueue.Count >= Length)
                 {
                     IndexQueue.Dequeue();
                     IndexQueue.Dequeue();
