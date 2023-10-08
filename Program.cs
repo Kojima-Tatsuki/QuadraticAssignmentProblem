@@ -2,13 +2,13 @@
 using QAP.CharacterUserInterface;
 using QAP.Model.Search;
 
-// Console.WriteLine("Hello, World!");
-
 var selectProblemCUI = new SelectProblemCUI();
 
 var problems = await selectProblemCUI.ReadProblems();
 
 Console.WriteLine("Read problem count: " + problems.Count);
+
+Console.WriteLine("ProblemSize: " + problems[0].GetProblemSize());
 
 // var oprimalOrder = new List<int> { 3, 4, 1, 2 };
 // Console.WriteLine("OptimalScore: " + problems[0].GetScore(oprimalOrder));
