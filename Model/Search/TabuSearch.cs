@@ -4,12 +4,12 @@
     {
         public ProblemModel Problem { get; init; }
 
-        private int IterMax { get; init; }
+        public TimeSpan SearchTime { get; init; }
 
-        public TabuSearch(ProblemModel problem)
+        public TabuSearch(ProblemModel problem, TimeSpan searchTIme)
         {
             Problem = problem;
-            IterMax = 200;
+            SearchTime = searchTIme;
         }
 
         public SearchResult Search(IReadOnlyList<int> initOrder)
@@ -21,7 +21,10 @@
             var currentOrder = bestOrder;
             var currentScore = bestScore;
 
-            for (var iter = 0; iter < IterMax; iter++)
+            var startTime = DateTime.Now;
+            var loopCount = 0;
+
+            while(DateTime.Now.Subtract(startTime) < SearchTime)
             {
                 var includeOptimal = IsIncludeMoreOptimal(currentOrder, tabuList);
 
@@ -34,9 +37,11 @@
                     bestOrder = currentOrder;
                     bestScore = currentScore;
                 }
+
+                loopCount++;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem);
+            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         /// <summary>
