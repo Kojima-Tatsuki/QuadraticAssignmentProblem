@@ -15,11 +15,11 @@
             var bestScore = Problem.GetScore(bestOrder);
             var loop = true;
 
+            var loopCount = 0;
+
             while (loop)
             {
                 var includeOptimal = IsIncludeMoreOptimal(bestOrder, bestScore);
-
-                // Console.WriteLine("Score: " + includeOptimal.score + ", Order: " + string.Join(", ", includeOptimal.order));
 
                 // 改善解が存在しない場合は、無意味な代入となる
                 loop = includeOptimal.isInclude;
@@ -27,7 +27,7 @@
                 bestScore = includeOptimal.score;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem);
+            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         /// <summary>

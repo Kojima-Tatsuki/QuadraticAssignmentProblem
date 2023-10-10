@@ -15,6 +15,7 @@ Console.WriteLine("ProblemSize: " + problems[0].GetProblemSize());
 // Console.WriteLine("OptimalOrder: " + string.Join(", ", oprimalOrder));
 
 var initOrder = problems[0].GetRandomInitOrder();
+var searchTIme = TimeSpan.FromSeconds(3);
 
 var local = new LocalSearch(problems[0]);
 var localResult = local.Search(initOrder);
@@ -22,13 +23,13 @@ var localResult = local.Search(initOrder);
 Console.WriteLine("Loacl ResultScore: " + localResult.BestScore);
 Console.WriteLine("Local ResultOrder: " + string.Join(", ", localResult.BestOrder));
 
-var tabu = new TabuSearch(problems[0]);
+var tabu = new TabuSearch(problems[0], searchTIme);
 var tabuResult = tabu.Search(initOrder);
 
 Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
 Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
 
-var rpns = new RandomPartialNeighborhoodSearch(problems[0], TimeSpan.FromSeconds(3));
+var rpns = new RandomPartialNeighborhoodSearch(problems[0], searchTIme);
 var rpnsResult = rpns.Search(initOrder);
 
 Console.WriteLine("RPNS ResultScore: " + rpnsResult.BestScore);

@@ -32,6 +32,8 @@ namespace QAP.Model.Search
             var partialRaito = 0.2f; // 部分近傍率
             var startTime = DateTime.Now;
 
+            var loopCount = 0;
+
             while (DateTime.Now.Subtract(startTime) < SearchTime)
             {
                 var includeOptimal = IsIncludeMoreOptimal(currentOrder, partialRaito);
@@ -44,9 +46,11 @@ namespace QAP.Model.Search
                     bestOrder = currentOrder;
                     bestScore = currentScore;
                 }
+
+                loopCount++;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem);
+            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito)
