@@ -9,6 +9,7 @@ namespace QAP.Model.Search
 {
     internal class RandomPartialNeighborhoodSearch : ISearch
     {
+        private string SearchName => "RandomPartialNeighborhoodSearch";
         public ProblemModel Problem { get; init; }
         public TimeSpan SearchTime { get; init; }
 
@@ -50,7 +51,7 @@ namespace QAP.Model.Search
                 loopCount++;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito)

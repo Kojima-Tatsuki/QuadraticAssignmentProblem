@@ -6,22 +6,26 @@ namespace QAP.CharacterUserInterface
 {
     internal class SelectProblemCUI
     {
-        public async Task<IReadOnlyList<ProblemModel>> ReadProblems()
+        private readonly string ProblemDirPath;
+
+        public SelectProblemCUI(string problemDirPath)
         {
-            var parentPath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName ?? throw new Exception("パスの取得に失敗しました");
-            var problemDirPath = parentPath + "/Problems/";
+            ProblemDirPath = problemDirPath;
+        }
 
-            var files = Directory.GetFiles(problemDirPath, "*.dat", SearchOption.TopDirectoryOnly);
+        public async Task<IReadOnlyList<(ProblemModel model, ProblemInfo info)>> ReadProblems(string[] problemsPath)
+        {
+            var problemInfos = GetProblemPattern(problemsPath);
+            var flattenProblemInfos = await SelectProblems(problemInfos);
 
-            var problemPattern = GetProblemPattern(files);
+            var controller = new ReadProblemController(ProblemDirPath);
+            var problemModels = controller.ReadProblems(flattenProblemInfos);
 
-            var flattenProblems = await SelectProblems(problemPattern);
+            var result = new List<(ProblemModel model, ProblemInfo info)>(problemModels.Count);
+            for (int i = 0; i < problemModels.Count; i++)
+                result.Add((problemModels[i], flattenProblemInfos[i]));
 
-            var controller = new ReadProblemController(problemDirPath);
-
-            var problems = controller.ReadProblems(flattenProblems);
-
-            return problems;
+            return result;
         }
 
         private async Task<IReadOnlyList<ProblemInfo>> SelectProblems(IReadOnlyDictionary<string, List<ProblemInfo>> pattern)
