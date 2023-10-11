@@ -10,30 +10,30 @@ var problems = await selectProblemCUI.ReadProblems(paths);
 
 Console.WriteLine("Read problem count: " + problems.Count);
 
-for (int i = 0; i < problems.Count; i++)
+foreach (var problem in problems)
 {
-    Console.WriteLine("ProblemSize: " + problems[i].GetProblemSize());
+    Console.WriteLine("ProblemSize: " + problem.GetProblemSize());
 
     // var oprimalOrder = new List<int> { 3, 4, 1, 2 };
     // Console.WriteLine("OptimalScore: " + problems[0].GetScore(oprimalOrder));
     // Console.WriteLine("OptimalOrder: " + string.Join(", ", oprimalOrder));
 
-    var initOrder = problems[i].GetRandomInitOrder();
-    var searchTIme = TimeSpan.FromSeconds(3);
+    var initOrder = problem.GetRandomInitOrder();
+    var searchTIme = TimeSpan.FromSeconds(problem.GetProblemSize()); // 問題サイズの秒数で探索
 
-    var local = new LocalSearch(problems[i]);
+    var local = new LocalSearch(problem);
     var localResult = local.Search(initOrder);
 
     Console.WriteLine("Loacl ResultScore: " + localResult.BestScore);
     Console.WriteLine("Local ResultOrder: " + string.Join(", ", localResult.BestOrder));
 
-    var tabu = new TabuSearch(problems[i], searchTIme);
+    var tabu = new TabuSearch(problem, searchTIme);
     var tabuResult = tabu.Search(initOrder);
 
     Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
     Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
 
-    var rpns = new RandomPartialNeighborhoodSearch(problems[i], searchTIme);
+    var rpns = new RandomPartialNeighborhoodSearch(problem, searchTIme);
     var rpnsResult = rpns.Search(initOrder);
 
     Console.WriteLine("RPNS ResultScore: " + rpnsResult.BestScore);
