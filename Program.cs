@@ -8,29 +8,32 @@ var problems = await selectProblemCUI.ReadProblems();
 
 Console.WriteLine("Read problem count: " + problems.Count);
 
-Console.WriteLine("ProblemSize: " + problems[0].GetProblemSize());
+for (int i = 0; i < problems.Count; i++)
+{
+    Console.WriteLine("ProblemSize: " + problems[i].GetProblemSize());
 
-// var oprimalOrder = new List<int> { 3, 4, 1, 2 };
-// Console.WriteLine("OptimalScore: " + problems[0].GetScore(oprimalOrder));
-// Console.WriteLine("OptimalOrder: " + string.Join(", ", oprimalOrder));
+    // var oprimalOrder = new List<int> { 3, 4, 1, 2 };
+    // Console.WriteLine("OptimalScore: " + problems[0].GetScore(oprimalOrder));
+    // Console.WriteLine("OptimalOrder: " + string.Join(", ", oprimalOrder));
 
-var initOrder = problems[0].GetRandomInitOrder();
-var searchTIme = TimeSpan.FromSeconds(3);
+    var initOrder = problems[i].GetRandomInitOrder();
+    var searchTIme = TimeSpan.FromSeconds(3);
 
-var local = new LocalSearch(problems[0]);
-var localResult = local.Search(initOrder);
+    var local = new LocalSearch(problems[i]);
+    var localResult = local.Search(initOrder);
 
-Console.WriteLine("Loacl ResultScore: " + localResult.BestScore);
-Console.WriteLine("Local ResultOrder: " + string.Join(", ", localResult.BestOrder));
+    Console.WriteLine("Loacl ResultScore: " + localResult.BestScore);
+    Console.WriteLine("Local ResultOrder: " + string.Join(", ", localResult.BestOrder));
 
-var tabu = new TabuSearch(problems[0], searchTIme);
-var tabuResult = tabu.Search(initOrder);
+    var tabu = new TabuSearch(problems[i], searchTIme);
+    var tabuResult = tabu.Search(initOrder);
 
-Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
-Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
+    Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
+    Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
 
-var rpns = new RandomPartialNeighborhoodSearch(problems[0], searchTIme);
-var rpnsResult = rpns.Search(initOrder);
+    var rpns = new RandomPartialNeighborhoodSearch(problems[i], searchTIme);
+    var rpnsResult = rpns.Search(initOrder);
 
-Console.WriteLine("RPNS ResultScore: " + rpnsResult.BestScore);
-Console.WriteLine("RPNS ResultOrder: " + string.Join(", ", rpnsResult.BestOrder));
+    Console.WriteLine("RPNS ResultScore: " + rpnsResult.BestScore);
+    Console.WriteLine("RPNS ResultOrder: " + string.Join(", ", rpnsResult.BestOrder));
+}

@@ -27,7 +27,7 @@ namespace QAP.CharacterUserInterface
         private async Task<IReadOnlyList<ProblemInfo>> SelectProblems(IReadOnlyDictionary<string, List<ProblemInfo>> pattern)
         {
             bool willLoop = true;
-            var selectedList = new Dictionary<string, List<ProblemInfo>>();
+            var selectedDict = new Dictionary<string, List<ProblemInfo>>();
             int selectIndex = pattern.Count - 1;
 
             while (willLoop)
@@ -38,7 +38,7 @@ namespace QAP.CharacterUserInterface
                 {
                     var key = pattern.Keys.ElementAt(i);
 
-                    var selected = selectedList.ContainsKey(key)? '*' : ' ';
+                    var selected = selectedDict.ContainsKey(key)? '*' : ' ';
 
                     if (i == selectIndex)
                         Console.WriteLine($"- [{selected}] {key} {pattern[key].Count}");
@@ -66,10 +66,10 @@ namespace QAP.CharacterUserInterface
                     // 選択
                     case ConsoleKey.Spacebar:
                         var key = pattern.Keys.ElementAt(selectIndex);
-                        if (selectedList.ContainsKey(key))
-                            selectedList.Remove(key);
+                        if (selectedDict.ContainsKey(key))
+                            selectedDict.Remove(key);
                         else
-                            selectedList.Add(key, pattern[key]);
+                            selectedDict.Add(key, pattern[key]);
                         break;
                     // 終了処理
                     case ConsoleKey.Enter:
@@ -85,7 +85,64 @@ namespace QAP.CharacterUserInterface
             }
 
             // 平坦化 (Flatten)
-            return selectedList.Values.SelectMany(x => x).ToList();
+            var flatten = selectedDict.Values.SelectMany(x => x).ToList();
+            selectIndex = flatten.Count - 1;
+            willLoop = true;
+
+            var result = new ProblemInfo[flatten.Count]; // 要素をすべてnullで初期化
+
+            while (willLoop)
+            {
+                // UI表示
+                Console.WriteLine("Select Problem");
+                for (int i = result.Length - 1; 0 <= i; i--)
+                {
+                    var selected = result[i] != null ? '*' : ' ';
+
+                    if (i == selectIndex)
+                        Console.WriteLine($"- [{selected}] {flatten[i].ProblemName} {flatten[i].ProblemNumber} {flatten[i].ProblemSize}");
+                    else
+                        Console.WriteLine($"  [{selected}] {flatten[i].ProblemName} {flatten[i].ProblemNumber} {flatten[i].ProblemSize}");
+                }
+                Console.WriteLine("Exit by pressing Enter key ...");
+
+                // 入力
+                var input = Console.ReadKey();
+
+                switch (input.Key)
+                {
+                    case ConsoleKey.UpArrow:
+                    case ConsoleKey.W:
+                        if (selectIndex < result.Length - 1)
+                            selectIndex++;
+                        break;
+                    case ConsoleKey.DownArrow:
+                    case ConsoleKey.S:
+                        if (0 < selectIndex)
+                            selectIndex--;
+                        break;
+
+                    // 選択
+                    case ConsoleKey.Spacebar:
+                        if (result[selectIndex] == null)
+                            result[selectIndex] = flatten[selectIndex];
+                        else
+                            result[selectIndex] = null!;
+                        break;
+                    // 終了処理
+                    case ConsoleKey.Enter:
+                        willLoop = false;
+                        break;
+                    default:
+                        break;
+                }
+
+                await Task.Delay(100);
+
+                Console.Clear();
+            }
+
+            return result.Where(x => x != null).ToList() ?? new List<ProblemInfo>(); // すべてnullの場合は空リストを返す
         }
 
         private IReadOnlyDictionary<string, List<ProblemInfo>> GetProblemPattern(string[] problemPaths)
