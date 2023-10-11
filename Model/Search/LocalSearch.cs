@@ -2,6 +2,7 @@
 {
     internal class LocalSearch : ISearch
     {
+        private string SearchName => "LocalSearch";
         public ProblemModel Problem { get; init; }
 
         public LocalSearch(ProblemModel problem)
@@ -27,7 +28,7 @@
                 bestScore = includeOptimal.score;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         /// <summary>

@@ -13,17 +13,19 @@ namespace QAP.CharacterUserInterface
             ProblemDirPath = problemDirPath;
         }
 
-        public async Task<IReadOnlyList<ProblemModel>> ReadProblems(string[] problemsPath)
+        public async Task<IReadOnlyList<(ProblemModel model, ProblemInfo info)>> ReadProblems(string[] problemsPath)
         {
-            var problemPattern = GetProblemPattern(problemsPath);
-
-            var flattenProblems = await SelectProblems(problemPattern);
+            var problemInfos = GetProblemPattern(problemsPath);
+            var flattenProblemInfos = await SelectProblems(problemInfos);
 
             var controller = new ReadProblemController(ProblemDirPath);
+            var problemModels = controller.ReadProblems(flattenProblemInfos);
 
-            var problems = controller.ReadProblems(flattenProblems);
+            var result = new List<(ProblemModel model, ProblemInfo info)>(problemModels.Count);
+            for (int i = 0; i < problemModels.Count; i++)
+                result.Add((problemModels[i], flattenProblemInfos[i]));
 
-            return problems;
+            return result;
         }
 
         private async Task<IReadOnlyList<ProblemInfo>> SelectProblems(IReadOnlyDictionary<string, List<ProblemInfo>> pattern)

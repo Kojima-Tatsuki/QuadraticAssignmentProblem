@@ -2,8 +2,9 @@
 {
     internal class TabuSearch : ISearch
     {
-        public ProblemModel Problem { get; init; }
+        private string SearchName => "TabuSearch";
 
+        public ProblemModel Problem { get; init; }
         public TimeSpan SearchTime { get; init; }
 
         public TabuSearch(ProblemModel problem, TimeSpan searchTIme)
@@ -41,7 +42,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
         }
 
         /// <summary>

@@ -27,12 +27,12 @@
 
         public string GetProblemDirPath()
         {
-            return ParentPath + SeparatorChar + DirectoryConst.PROBLEM_DIR_NAME;
+            return ParentPath + SeparatorChar + DirectoryConst.PROBLEM_DIR_NAME + SeparatorChar;
         }
 
         public string GetResultDirPath()
         {
-            return ParentPath + SeparatorChar + DirectoryConst.RESULT_DIR_NAME;
+            return ParentPath + SeparatorChar + DirectoryConst.RESULT_DIR_NAME + SeparatorChar;
         }
     }
 }
