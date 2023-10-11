@@ -2,9 +2,11 @@
 using QAP.CharacterUserInterface;
 using QAP.Model.Search;
 
-var selectProblemCUI = new SelectProblemCUI();
+var dirController = new DirectoryController();
+var paths = dirController.GetProblemsPath();
 
-var problems = await selectProblemCUI.ReadProblems();
+var selectProblemCUI = new SelectProblemCUI(dirController.ParentPath);
+var problems = await selectProblemCUI.ReadProblems(paths);
 
 Console.WriteLine("Read problem count: " + problems.Count);
 
