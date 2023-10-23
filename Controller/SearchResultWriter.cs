@@ -34,8 +34,6 @@ namespace QAP.Controller
                 sw.WriteLine($"Time: {result.Problem.GetProblemSize()}, Loops: {result.LoopCount}\n");
             }
 
-            sw.WriteLine($"===== ===== ===== =====\n");
-
             sw.Close();
         }
     }
