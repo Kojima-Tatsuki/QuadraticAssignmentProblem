@@ -53,7 +53,7 @@
         private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList)
         {
             // 近傍探索、タブーリストの更新
-            var currentBestScore = -1;
+            var currentBestScore = int.MaxValue;
             var currentBestOrder = new List<(int[] order, int i, int k)>();
 
             for (var i = 0; i < targetOrder.Count; i++)
@@ -72,7 +72,7 @@
                     var newScore = Problem.GetScore(newOrder);
 
                     // 改善解が近傍中に存在する場合
-                    if (newScore < currentBestScore || currentBestScore == -1)
+                    if (newScore < currentBestScore)
                     {
                         currentBestOrder.Clear();
                         currentBestOrder.Add((newOrder, i, k));

@@ -16,12 +16,15 @@ foreach (var problem in problems)
     var model = problem.model;
     Console.WriteLine("ProblemSize: " + model.GetProblemSize());
 
-    var initOrder = model.GetRandomInitOrder();
+    var initOrders = Enumerable.Range(0, 5)
+        .Select(_ => model.GetRandomInitOrder())
+        .ToList();
     var searchTime = TimeSpan.FromSeconds(model.GetProblemSize()); // 問題サイズの秒数で探索
 
     var searchNames = new string[] { "local", "tabu", "rpns" };
 
-    var searchResults = searchNames
+    // 並列して計算する
+    var searchResultModels = searchNames
         .Select<string, ISearch>(name => name switch
             {
                 "local" => new LocalSearch(model),
@@ -31,9 +34,12 @@ foreach (var problem in problems)
             })
         .AsParallel()
         .WithDegreeOfParallelism(3) // 同時実行数
-        .Select(searcher => searcher.Search(initOrder))
+        .Select(searcher => Enumerable.Range(0, initOrders.Count)
+            .Select(i => searcher.Search(initOrders[i]))
+            .ToArray())
+        .Select(SearchResultWriter.SearchResultModel.FromResults)
         .ToList();
 
     var writer = new SearchResultWriter(dirController.GetResultDirPath());
-    writer.WriteResult(problem.info, searchResults);
+    writer.WriteResult(problem.info, searchResultModels);
 }
