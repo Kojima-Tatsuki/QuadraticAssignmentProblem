@@ -16,27 +16,30 @@ foreach (var problem in problems)
     var model = problem.model;
     Console.WriteLine("ProblemSize: " + model.GetProblemSize());
 
-    var initOrder = model.GetRandomInitOrder();
-    var searchTIme = TimeSpan.FromSeconds(model.GetProblemSize()); // 問題サイズの秒数で探索
+    var initOrders = Enumerable.Range(0, 5)
+        .Select(_ => model.GetRandomInitOrder())
+        .ToList();
+    var searchTime = TimeSpan.FromSeconds(model.GetProblemSize()); // 問題サイズの秒数で探索
 
-    var local = new LocalSearch(model);
-    var localResult = local.Search(initOrder);
+    var searchNames = new string[] { "local", "tabu", "rpns" };
 
-    Console.WriteLine("Loacl ResultScore: " + localResult.BestScore);
-    Console.WriteLine("Local ResultOrder: " + string.Join(", ", localResult.BestOrder));
-
-    var tabu = new TabuSearch(model, searchTIme);
-    var tabuResult = tabu.Search(initOrder);
-
-    Console.WriteLine("Tabu ResultScore: " + tabuResult.BestScore);
-    Console.WriteLine("Tabu ResultOrder: " + string.Join(", ", tabuResult.BestOrder));
-
-    var rpns = new RandomPartialNeighborhoodSearch(model, searchTIme);
-    var rpnsResult = rpns.Search(initOrder);
-
-    Console.WriteLine("RPNS ResultScore: " + rpnsResult.BestScore);
-    Console.WriteLine("RPNS ResultOrder: " + string.Join(", ", rpnsResult.BestOrder));
+    // 並列して計算する
+    var searchResultModels = searchNames
+        .Select<string, ISearch>(name => name switch
+            {
+                "local" => new LocalSearch(model),
+                "tabu" => new TabuSearch(model, searchTime),
+                "rpns" => new RandomPartialNeighborhoodSearch(model, searchTime),
+                _ => throw new Exception("Invalid searcher name")
+            })
+        .AsParallel()
+        .WithDegreeOfParallelism(3) // 同時実行数
+        .Select(searcher => Enumerable.Range(0, initOrders.Count)
+            .Select(i => searcher.Search(initOrders[i]))
+            .ToArray())
+        .Select(SearchResultWriter.SearchResultModel.FromResults)
+        .ToList();
 
     var writer = new SearchResultWriter(dirController.GetResultDirPath());
-    writer.WriteResult(problem.info, new List<SearchResult> { localResult, tabuResult, rpnsResult });
+    writer.WriteResult(problem.info, searchResultModels);
 }
