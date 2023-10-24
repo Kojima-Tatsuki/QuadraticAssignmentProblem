@@ -106,14 +106,13 @@
 
             public TabuList AddTabuList(Pair pair)
             {
-                if (IndexQueue.Count >= Length)
+                foreach (var item in pair.ToArray())
                 {
-                    IndexQueue.Dequeue();
-                    IndexQueue.Dequeue();
-                }
+                    if (IndexQueue.Count >= Length)
+                        IndexQueue.Dequeue();
 
-                IndexQueue.Enqueue(pair.First);
-                IndexQueue.Enqueue(pair.Second);
+                    IndexQueue.Enqueue(item);
+                }
 
                 return this;
             }
@@ -130,6 +129,15 @@
             {
                 First = a;
                 Second = b;
+            }
+
+            public int[] ToArray()
+            {
+                var isFirst = new Random().Next(2) == 1;
+                if (isFirst)
+                    return new int[] { First, Second };
+                else
+                    return new int[] { Second, First };
             }
         }
     }
