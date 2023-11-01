@@ -97,5 +97,22 @@ namespace QAP.Model.Search
 
             return (currentBestScore, resultOrder);
         }
+
+        public record RPNSOptions
+        {
+            public RaitoType Type { get; init; }
+            
+            public float? FixedRaito { get;init; } // 固定の場合のみ使用
+            public float? RaitoMin { get; init; } // 動的更新の場合のみ使用
+            public float? RaitoMax { get; init; } // 動的更新の場合のみ使用
+
+
+            public enum RaitoType
+            {
+                Fix, // 固定
+                LinerUpdate, // 線形更新
+                ExponentialUpdate, // 指数更新
+            }
+        }
     }
 }
