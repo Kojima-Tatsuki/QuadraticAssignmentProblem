@@ -1,5 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-using QAP.CharacterUserInterface;
+﻿using QAP.CharacterUserInterface;
 using QAP.Controller;
 
 var dirController = new DirectoryController();
@@ -17,19 +16,30 @@ var selectedSearchModels = await new SelectSearchCUI().ReadAddaptSearchModels();
 foreach (var problem in problems)
 {
     var model = problem.model;
-    Console.WriteLine("ProblemSize: " + model.GetProblemSize());
+    Console.WriteLine($"{problem.info.ProblemName}-{problem.info.ProblemSize}{problem.info.ProblemNumber}, Size: {model.GetProblemSize()}");
 
     var initOrders = Enumerable.Range(0, 5)
         .Select(_ => model.GetRandomInitOrder())
         .ToList();
     var searchTime = TimeSpan.FromSeconds(model.GetProblemSize()); // 問題サイズの秒数で探索
 
+    var shower = new PercentageShower(selectedSearchModels.Count * initOrders.Count);
+    int currentCount = 0;
+
+    // 進捗表示
+    shower.UpdateConsole(currentCount);
+
     // 並列して計算する
     var searchResultModels = selectedSearchModels
         .AsParallel()
         .WithDegreeOfParallelism(6) // 同時実行数
         .Select(searcher => Enumerable.Range(0, initOrders.Count)
-            .Select(i => searcher.Search(problem.model, initOrders[i], searchTime))
+            .Select(i =>
+            {
+                var result = searcher.Search(problem.model, initOrders[i], searchTime);
+                shower.UpdateConsole(++currentCount);
+                return result;
+            })
             .ToArray())
         .Select(SearchResultWriter.SearchResultModel.FromResults)
         .ToList();
