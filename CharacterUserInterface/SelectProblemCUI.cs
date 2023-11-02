@@ -16,7 +16,7 @@ namespace QAP.CharacterUserInterface
         public async Task<IReadOnlyList<(ProblemModel model, ProblemInfo info)>> ReadProblems(string[] problemsPath)
         {
             var problemInfos = GetProblemPattern(problemsPath);
-            var flattenProblemInfos = await SelectProblems(problemInfos);
+            var flattenProblemInfos = await SelectProblems(problemInfos); // 問題を選択する
 
             var controller = new ReadProblemController(ProblemDirPath);
             var problemModels = controller.ReadProblems(flattenProblemInfos);

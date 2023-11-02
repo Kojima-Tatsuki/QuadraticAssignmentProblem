@@ -6,10 +6,14 @@ using QAP.Model.Search;
 var dirController = new DirectoryController();
 var paths = dirController.GetProblemsPath();
 
+// 問題選択
 var selectProblemCUI = new SelectProblemCUI(dirController.GetProblemDirPath());
 var problems = await selectProblemCUI.ReadProblems(paths);
 
 Console.WriteLine("Read problem count: " + problems.Count);
+
+// 探索モデルの選択
+var selectedSearchModels = new SelectSearchCUI().ReadAddaptSearchModels(problems.First().model);
 
 foreach (var problem in problems)
 {

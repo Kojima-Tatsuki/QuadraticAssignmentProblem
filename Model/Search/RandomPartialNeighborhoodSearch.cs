@@ -56,7 +56,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount, modelOption: Option.ToString());
         }
 
         public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito)
@@ -118,6 +118,14 @@
                 RaitoMin = raitoMin;
                 RaitoMax = raitoMax;
             }
+
+            public override string ToString() => Type switch
+            {
+                RaitoType.Fix => $"Fix-{FixedRaito}",
+                RaitoType.LinerUpdate => $"Liner-{RaitoMin}-{RaitoMax}",
+                RaitoType.ExponentialUpdate => $"Exponential-{RaitoMin}-{RaitoMax}",
+                _ => "Default"
+            };
 
             public enum RaitoType
             {
