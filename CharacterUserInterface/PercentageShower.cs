@@ -13,7 +13,7 @@
 
         public void UpdateConsole(int count)
         {
-            var secondSpan = (DateTime.Now - StartTime).Seconds;
+            var secondSpan = (DateTime.Now - StartTime).TotalSeconds;
             Console.WriteLine($"{count} / {MaxCount} ({MathF.Round((float)count / MaxCount * 100, 2)}%), {secondSpan} seconds elapsed.");
         }
     }
