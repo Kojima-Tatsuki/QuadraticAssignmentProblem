@@ -26,7 +26,7 @@ namespace QAP.Model
 
             var res = x * Factory.DistanceMatrix * x.Transpose();
 
-            return (int)sum(Flow.DistanceMatrix, res) / 2;
+            return (int)sum(Flow.DistanceMatrix, res); // 2で割らないスコアが最適解として報告されていた.
         }
 
         private Matrix IndexMatrixFromList(IReadOnlyList<int> list)
