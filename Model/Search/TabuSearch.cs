@@ -4,20 +4,13 @@
     {
         private string SearchName => "TabuSearch";
 
-        public ProblemModel Problem { get; init; }
-        public TimeSpan SearchTime { get; init; }
-
-        public TabuSearch(ProblemModel problem, TimeSpan searchTIme)
+        public SearchResult Search(ProblemModel problem, IReadOnlyList<int> initOrder, TimeSpan? searchTime)
         {
-            Problem = problem;
-            SearchTime = searchTIme;
-        }
+            var time = searchTime ?? TimeSpan.FromSeconds(problem.GetProblemSize()); // 問題サイズの秒数で探索
 
-        public SearchResult Search(IReadOnlyList<int> initOrder)
-        {
             var tabuList = new TabuList(initOrder.Count);
             var bestOrder = initOrder;
-            var bestScore = Problem.GetScore(bestOrder);
+            var bestScore = problem.GetScore(bestOrder);
 
             var currentOrder = bestOrder;
             var currentScore = bestScore;
@@ -25,9 +18,9 @@
             var startTime = DateTime.Now;
             var loopCount = 0;
 
-            while(DateTime.Now.Subtract(startTime) < SearchTime)
+            while(DateTime.Now.Subtract(startTime) < time)
             {
-                var includeOptimal = IsIncludeMoreOptimal(currentOrder, tabuList);
+                var includeOptimal = IsIncludeMoreOptimal(currentOrder, tabuList, problem);
 
                 currentOrder = includeOptimal.order;
                 currentScore = includeOptimal.score;
@@ -42,7 +35,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount);
         }
 
         /// <summary>
@@ -50,7 +43,7 @@
         /// </summary>
         /// <param name="targetOrder"></param>
         /// <returns></returns>
-        private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList)
+        private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList, ProblemModel problem)
         {
             // 近傍探索、タブーリストの更新
             var currentBestScore = int.MaxValue;
@@ -69,7 +62,7 @@
                     newOrder[i] = newOrder[k];
                     newOrder[k] = tmp;
 
-                    var newScore = Problem.GetScore(newOrder);
+                    var newScore = problem.GetScore(newOrder);
 
                     // 改善解が近傍中に存在する場合
                     if (newScore < currentBestScore)
