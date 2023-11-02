@@ -22,7 +22,7 @@
                 bestScore = includeOptimal.score;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, problem.GetProblemSize());
         }
 
         /// <summary>

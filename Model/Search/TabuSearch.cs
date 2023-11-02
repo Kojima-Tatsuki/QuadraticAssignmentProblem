@@ -35,7 +35,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, (int)time.TotalSeconds);
         }
 
         /// <summary>
