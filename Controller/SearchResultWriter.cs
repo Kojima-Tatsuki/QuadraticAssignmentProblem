@@ -99,7 +99,7 @@ namespace QAP.Controller
                     initOrder: results[0].InitOrder,
                     bestOrder: bestOrder,
                     problem: results[0].Problem,
-                    time: results[0].Problem.GetProblemSize(),
+                    time: results[0].SearchTime,
                     aveLoops: sumLoops / results.Length,
                     aveScore: sumScore / results.Length,
                     bestScore: bestScore,

@@ -16,8 +16,9 @@ namespace QAP.Model.Search
         public int BestScore { get; init; }
         public ProblemModel Problem { get; init; }
         public int LoopCount { get; init; }
+        public int SearchTime { get; init; }
 
-        public SearchResult(string searchName, IReadOnlyList<int> initOrder, IReadOnlyList<int> bestOrder, int bestScore, ProblemModel problem, int loopCount, string? modelOption = null)
+        public SearchResult(string searchName, IReadOnlyList<int> initOrder, IReadOnlyList<int> bestOrder, int bestScore, ProblemModel problem, int loopCount, int searchTime, string? modelOption = null)
         {
             SearchName = searchName;
             SearchModelOption = modelOption;
@@ -26,6 +27,7 @@ namespace QAP.Model.Search
             BestScore = bestScore;
             Problem = problem;
             LoopCount = loopCount;
+            SearchTime = searchTime;
         }
     }
 }

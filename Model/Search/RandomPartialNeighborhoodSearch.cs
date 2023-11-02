@@ -54,7 +54,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, modelOption: Option.ToString());
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, (int)time.TotalSeconds, modelOption: Option.ToString());
         }
 
         public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito, ProblemModel problem)
