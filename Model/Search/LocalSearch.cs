@@ -3,24 +3,18 @@
     internal class LocalSearch : ISearch
     {
         private string SearchName => "LocalSearch";
-        public ProblemModel Problem { get; init; }
 
-        public LocalSearch(ProblemModel problem)
-        {
-            Problem = problem;
-        }
-
-        public SearchResult Search(IReadOnlyList<int> initOrder)
+        public SearchResult Search(ProblemModel problem, IReadOnlyList<int> initOrder, TimeSpan? searchTime)
         {
             var bestOrder = initOrder;
-            var bestScore = Problem.GetScore(bestOrder);
+            var bestScore = problem.GetScore(bestOrder);
             var loop = true;
 
             var loopCount = 0;
 
             while (loop)
             {
-                var includeOptimal = IsIncludeMoreOptimal(bestOrder, bestScore);
+                var includeOptimal = IsIncludeMoreOptimal(bestOrder, bestScore, problem);
 
                 // 改善解が存在しない場合は、無意味な代入となる
                 loop = includeOptimal.isInclude;
@@ -28,7 +22,7 @@
                 bestScore = includeOptimal.score;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount);
         }
 
         /// <summary>
@@ -36,7 +30,7 @@
         /// </summary>
         /// <param name="targetOrder"></param>
         /// <returns></returns>
-        private (bool isInclude, int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, int targetScore)
+        private (bool isInclude, int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, int targetScore, ProblemModel problem)
         {
             var score = targetScore;
 
@@ -49,7 +43,7 @@
                     newOrder[i] = newOrder[j];
                     newOrder[j] = tmp;
 
-                    var newScore = Problem.GetScore(newOrder);
+                    var newScore = problem.GetScore(newOrder);
 
                     // 改善解が近傍中に存在する場合
                     if (newScore < score)

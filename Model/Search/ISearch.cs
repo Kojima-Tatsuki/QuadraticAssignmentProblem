@@ -1,10 +1,10 @@
-﻿namespace QAP.Model.Search
+﻿using System.Reflection;
+
+namespace QAP.Model.Search
 {
     internal interface ISearch
     {
-        public ProblemModel Problem { get; init; }
-
-        public SearchResult Search(IReadOnlyList<int> initOrder);
+        public SearchResult Search(ProblemModel problem, IReadOnlyList<int> initOrder, TimeSpan? searchTime = null);
     }
 
     internal record SearchResult

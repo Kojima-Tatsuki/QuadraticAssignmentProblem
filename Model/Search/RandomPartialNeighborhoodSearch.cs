@@ -3,25 +3,23 @@
     internal class RandomPartialNeighborhoodSearch : ISearch
     {
         private string SearchName => "RandomPartialNeighborhoodSearch";
-        public ProblemModel Problem { get; init; }
-        public TimeSpan SearchTime { get; init; }
 
         private Random Random { get; init; }
 
         private RpnsOption Option { get; init; }
 
-        public RandomPartialNeighborhoodSearch(ProblemModel problem, TimeSpan searchTime, RpnsOption? option = null)
+        public RandomPartialNeighborhoodSearch(RpnsOption? option = null)
         {
-            Problem = problem;
-            SearchTime = searchTime;
             Random = new Random();
             Option = option ?? new RpnsOption(RpnsOption.RaitoType.Fix, fixedRaito: 0.2f);
         }
 
-        public SearchResult Search(IReadOnlyList<int> initOrder)
+        public SearchResult Search(ProblemModel problem, IReadOnlyList<int> initOrder, TimeSpan? searchTime)
         {
+            var time = searchTime ?? TimeSpan.FromSeconds(problem.GetProblemSize());
+
             var bestOrder = initOrder;
-            var bestScore = Problem.GetScore(bestOrder);
+            var bestScore = problem.GetScore(bestOrder);
 
             var currentOrder = bestOrder;
             var currentScore = bestScore;
@@ -30,9 +28,9 @@
 
             var loopCount = 0;
 
-            while (DateTime.Now.Subtract(startTime) < SearchTime)
+            while (DateTime.Now.Subtract(startTime) < time)
             {
-                var timeRaito = DateTime.Now.Subtract(startTime).TotalSeconds / SearchTime.TotalSeconds;
+                var timeRaito = DateTime.Now.Subtract(startTime).TotalSeconds / time.TotalSeconds;
 
                 var raito = Option.Type switch
                 {
@@ -42,7 +40,7 @@
                     _ => throw new Exception("Rpnsの近傍率型に未知の型が代入されています")
                 };
 
-                var includeOptimal = IsIncludeMoreOptimal(currentOrder, raito);
+                var includeOptimal = IsIncludeMoreOptimal(currentOrder, raito, problem);
 
                 currentOrder = includeOptimal.order;
                 currentScore = includeOptimal.score;
@@ -56,10 +54,10 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, Problem, loopCount, modelOption: Option.ToString());
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, modelOption: Option.ToString());
         }
 
-        public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito)
+        public (int score, IReadOnlyList<int> order) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, float partialRaito, ProblemModel problem)
         {
             var currentBestScore = -1;
             var currentBestOrder = new List<int[]>();
@@ -78,7 +76,7 @@
                     newOrder[i] = newOrder[k];
                     newOrder[k] = tmp;
 
-                    var newScore = Problem.GetScore(newOrder);
+                    var newScore = problem.GetScore(newOrder);
 
                     // 改善解が近傍中に存在する場合
                     if (newScore < currentBestScore || currentBestScore == -1)
@@ -95,7 +93,7 @@
             }
 
             if (currentBestOrder.Count == 0)
-                return (Problem.GetScore(targetOrder), targetOrder); // すべての近傍で探索が出来なかった場合
+                return (problem.GetScore(targetOrder), targetOrder); // すべての近傍で探索が出来なかった場合
 
             // 複数候補から1つ選んで改善解とする
             var resultOrder = currentBestOrder[new Random().Next(0, currentBestOrder.Count)];
