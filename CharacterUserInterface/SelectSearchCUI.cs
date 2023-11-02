@@ -11,10 +11,8 @@ namespace QAP.CharacterUserInterface
         private readonly float RpnsRaitoMin = 0.005f;
         private readonly float[] RpnsRaitoMaxPatterns = new float[] {0.005f, 0.01f, 0.015f, 0.02f, 0.03f, 0.05f, 0.07f, 0.1f, 0.15f, 0.2f, 0.25f};
 
-        public async Task<IReadOnlyList<ISearch>> ReadAddaptSearchModels(ProblemModel problem)
+        public async Task<IReadOnlyList<ISearch>> ReadAddaptSearchModels()
         {
-            var searchTime = TimeSpan.FromSeconds(problem.GetProblemSize()); // 問題サイズの秒数で探索
-
             var fixedOptions = RpnsFixedRaitoPatterns
                 .Select(fixedRaito => new RpnsOption(RpnsOption.RaitoType.Fix, fixedRaito));
             var linerOptions = RpnsRaitoMaxPatterns
@@ -28,8 +26,8 @@ namespace QAP.CharacterUserInterface
             var selectedOptions = await CUIModel.Input(options);
 
             var result = selectedOptions
-                .Select(option => new RandomPartialNeighborhoodSearch(problem, searchTime, option))
-                .Concat(new List<ISearch> { new LocalSearch(problem), new TabuSearch(problem, searchTime) })
+                .Select(option => new RandomPartialNeighborhoodSearch(option))
+                .Concat(new List<ISearch> { new LocalSearch(), new TabuSearch() })
                 .ToList();
 
             return result;
@@ -56,9 +54,9 @@ namespace QAP.CharacterUserInterface
                     var selected = selectedDict.ContainsKey(key) ? '*' : ' ';
 
                     if (i == selectIndex)
-                        Console.WriteLine($"- [{selected}] {key} {patterns[key]}");
+                        Console.WriteLine($"- [{selected}] {key}");
                     else
-                        Console.WriteLine($"  [{selected}] {key} {patterns[key]}");
+                        Console.WriteLine($"  [{selected}] {key}");
                 }
                 Console.WriteLine("Exit by pressing Enter key ...");
 

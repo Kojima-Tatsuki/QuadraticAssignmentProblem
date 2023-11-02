@@ -95,7 +95,7 @@ namespace QAP.Controller
                 }
 
                 return new SearchResultModel(
-                    searchName: results[0].SearchName,
+                    searchName: results[0].SearchName + (results[0].SearchModelOption ?? ""),
                     initOrder: results[0].InitOrder,
                     bestOrder: bestOrder,
                     problem: results[0].Problem,
