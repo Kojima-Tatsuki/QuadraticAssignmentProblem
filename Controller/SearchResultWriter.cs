@@ -28,7 +28,7 @@ namespace QAP.Controller
                 .ForEach(result =>
                 {
                     sw.WriteLine($"{result.SearchName}");
-                    sw.WriteLine($"  BestScore: {result.BestScore}, Ave: {result.AveScore}");
+                    sw.WriteLine($"  BestScore: {result.BestScore}, Ave: {result.AveScore}, WorstScore: {result.WorstScore}, Max/Min: {result.WorstScore / result.BestScore}");
                     sw.WriteLine($"  Time/Loop: {result.Time} / {result.AveLoops}");
                 });
 
@@ -60,13 +60,15 @@ namespace QAP.Controller
             public float AveLoops { get; init; }
             public float AveScore { get; init; }
             public int BestScore { get; init; }
+            public int WorstScore { get; init; }
             public SearchResult[] Results { get; init; }
 
-            private SearchResultModel(string searchName, IReadOnlyList<int> initOrder, IReadOnlyList<int> bestOrder, ProblemModel problem, int time, float aveLoops, float aveScore, int bestScore, SearchResult[] results)
+            private SearchResultModel(string searchName, IReadOnlyList<int> initOrder, IReadOnlyList<int> bestOrder, ProblemModel problem, int time, float aveLoops, float aveScore, int bestScore, int worstScore, SearchResult[] results)
             {
                 SearchName = searchName;
                 InitOrder = initOrder;
                 BestOrder = bestOrder;
+                WorstScore = worstScore;
                 Problem = problem;
                 Time = time;
                 AveLoops = aveLoops;
@@ -80,6 +82,7 @@ namespace QAP.Controller
                 float sumLoops = 0;
                 float sumScore = 0;
                 int bestScore = int.MaxValue;
+                int worstScore = int.MinValue;
                 IReadOnlyList<int> bestOrder = null!; 
 
                 foreach (var result in results)
@@ -92,12 +95,16 @@ namespace QAP.Controller
                         bestScore = result.BestScore;
                         bestOrder = result.BestOrder;
                     }
+
+                    if (result.BestScore > worstScore)
+                        worstScore = result.BestScore;
                 }
 
                 return new SearchResultModel(
                     searchName: results[0].SearchName + (results[0].SearchModelOption ?? ""),
                     initOrder: results[0].InitOrder,
                     bestOrder: bestOrder,
+                    worstScore: worstScore,
                     problem: results[0].Problem,
                     time: results[0].SearchTime,
                     aveLoops: sumLoops / results.Length,
