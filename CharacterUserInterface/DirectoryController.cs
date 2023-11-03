@@ -1,4 +1,6 @@
-﻿namespace QAP.CharacterUserInterface
+﻿using System.Reflection;
+
+namespace QAP.CharacterUserInterface
 {
     internal class DirectoryController
     {
@@ -8,8 +10,12 @@
 
         public DirectoryController()
         {
+#if RELEASE
+            ParentPath = Directory.GetParent(Assembly.GetEntryAssembly()?.Location ?? "")?.FullName ?? throw new Exception("パスの取得に失敗しました");
+#else
             ParentPath = Directory.GetParent(Environment.CurrentDirectory)?.Parent?.Parent?.FullName ?? throw new Exception("パスの取得に失敗しました");
-            SeparatorChar = Path.DirectorySeparatorChar;
+#endif
+            SeparatorChar = Path.DirectorySeparatorChar; // '/', '\' など
 
             // Dir作成
             if (!Directory.Exists(GetProblemDirPath()))
