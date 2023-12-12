@@ -28,7 +28,7 @@ namespace QAP.Controller
                 .ForEach(result =>
                 {
                     sw.WriteLine($"{result.SearchName}");
-                    sw.WriteLine($"  BestScore: {result.BestScore}, Ave: {result.AveScore}, WorstScore: {result.WorstScore}, Max/Min: {result.WorstScore / result.BestScore}");
+                    sw.WriteLine($"  BestScore: {result.BestScore}, Ave: {result.AveScore}, WorstScore: {result.WorstScore}, Max/Min: {(float)result.WorstScore / result.BestScore}");
                     sw.WriteLine($"  Time/Loop: {result.Time} / {result.AveLoops}");
                 });
 
