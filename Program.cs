@@ -21,7 +21,7 @@ foreach (var problem in problems)
     var initOrders = Enumerable.Range(0, 5)
         .Select(_ => model.GetRandomInitOrder())
         .ToList();
-    var searchTime = TimeSpan.FromSeconds(model.GetProblemSize()); // 問題サイズの秒数で探索
+    var searchTime = TimeSpan.FromSeconds(5); // 問題サイズの秒数で探索
 
     var shower = new PercentageShower(selectedSearchModels.Count * initOrders.Count);
     int currentCount = 0;

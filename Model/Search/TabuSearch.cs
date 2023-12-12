@@ -4,11 +4,23 @@
     {
         private string SearchName => "TabuSearch";
 
+        private TabuOption Option { get; init; }
+
+        public TabuSearch(TabuOption? option = null)
+        {
+            Option = option ?? new TabuOption { Type = TabuOption.TabuListType.OrderLength };
+        }
+
         public SearchResult Search(ProblemModel problem, IReadOnlyList<int> initOrder, TimeSpan? searchTime)
         {
             var time = searchTime ?? TimeSpan.FromSeconds(problem.GetProblemSize()); // 問題サイズの秒数で探索
 
-            var tabuList = new TabuList(initOrder.Count);
+            var tabuList = Option.Type switch
+            {
+                TabuOption.TabuListType.OrderLength => TabuList.CreateByOrderLength(initOrder.Count),
+                TabuOption.TabuListType.ListLength => TabuList.CreateByListLength(initOrder.Count),
+                _ => throw new Exception("TabuListの型に未知の型が代入されています")
+            };
             var bestOrder = initOrder;
             var bestScore = problem.GetScore(bestOrder);
 
@@ -22,9 +34,13 @@
             {
                 var includeOptimal = IsIncludeMoreOptimal(currentOrder, tabuList, problem);
 
-                currentOrder = includeOptimal.order;
-                currentScore = includeOptimal.score;
-                tabuList = includeOptimal.tabuList;
+                // タブーリストを満たす解が存在しない場合、探索終了
+                if (!includeOptimal.HasValue)
+                    break;
+
+                currentOrder = includeOptimal.Value.order;
+                currentScore = includeOptimal.Value.score;
+                tabuList = includeOptimal.Value.tabuList;
 
                 if (currentScore < bestScore)
                 {
@@ -35,7 +51,7 @@
                 loopCount++;
             }
 
-            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, (int)time.TotalSeconds);
+            return new SearchResult(SearchName, initOrder, bestOrder, bestScore, problem, loopCount, (int)time.TotalSeconds, Option.ToString());
         }
 
         /// <summary>
@@ -43,7 +59,7 @@
         /// </summary>
         /// <param name="targetOrder"></param>
         /// <returns></returns>
-        private (int score, IReadOnlyList<int> order, TabuList tabuList) IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList, ProblemModel problem)
+        private (int score, IReadOnlyList<int> order, TabuList tabuList)? IsIncludeMoreOptimal(IReadOnlyList<int> targetOrder, TabuList tabuList, ProblemModel problem)
         {
             // 近傍探索、タブーリストの更新
             var currentBestScore = int.MaxValue;
@@ -78,6 +94,9 @@
                 }
             }
 
+            if (currentBestScore == int.MaxValue && currentBestOrder.Count == 0)
+                return null;
+
             // 複数候補から1つ選んで改善解とする
             var index = new Random().Next(0, currentBestOrder.Count);
             var resultOrder = currentBestOrder[index];
@@ -86,16 +105,42 @@
             return (currentBestScore, resultOrder.order, resultTabuList);
         }
 
+        public record TabuOption
+        {
+            public TabuListType Type { get; init; }
+
+            public int TabuSize { get; init; }
+
+            public enum TabuListType
+            {
+                OrderLength,
+                ListLength
+            }
+
+            public override string ToString()
+            {
+                return Type switch
+                {
+                    TabuListType.OrderLength => $"OrderLength",
+                    TabuListType.ListLength => $"ListLength-{TabuSize}",
+                    _ => "Default"
+                };  
+            }
+        }
+
         private class TabuList
         {
             public int Length { get; init; }
             private Queue<int> IndexQueue { get; init; }
 
-            public TabuList(int orderLength)
+            private TabuList(int listLength)
             {
-                Length = (int)Math.Sqrt(orderLength); // 平方根を取る
+                Length = listLength;
                 IndexQueue = new Queue<int>(Length);
             }
+
+            public static TabuList CreateByOrderLength(int length) => new TabuList((int)Math.Sqrt(length));
+            public static TabuList CreateByListLength(int length) => new TabuList(length);
 
             public TabuList AddTabuList(Pair pair)
             {
