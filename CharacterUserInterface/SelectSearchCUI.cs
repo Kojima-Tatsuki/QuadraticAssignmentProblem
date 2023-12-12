@@ -1,5 +1,4 @@
-﻿using QAP.Model;
-using QAP.Model.Search;
+﻿using QAP.Model.Search;
 
 namespace QAP.CharacterUserInterface
 {
@@ -9,10 +8,13 @@ namespace QAP.CharacterUserInterface
     {
         private readonly float[] RpnsFixedRaitoPatterns = new float[] { 0.01f, 0.02f, 0.03f, 0.05f, 0.1f, 0.2f, 0.3f, 0.5f, 1.0f };
         private readonly float RpnsRaitoMin = 0.005f;
-        private readonly float[] RpnsRaitoMaxPatterns = new float[] {0.005f, 0.01f, 0.015f, 0.02f, 0.03f, 0.05f, 0.07f, 0.1f, 0.15f, 0.2f, 0.25f};
+        private readonly float[] RpnsRaitoMaxPatterns = new float[] {0.005f, 0.01f, 0.015f, 0.02f, 0.03f, 0.05f, 0.07f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f};
+
+        private readonly int[] TabuListLengthPatterns = new int[] { 3, 5, 7, 11, 13, 17, 23 };
 
         public async Task<IReadOnlyList<ISearch>> ReadAddaptSearchModels()
         {
+            // RPNS
             var fixedOptions = RpnsFixedRaitoPatterns
                 .Select(fixedRaito => new RpnsOption(RpnsOption.RaitoType.Fix, fixedRaito));
             var linerOptions = RpnsRaitoMaxPatterns
@@ -20,17 +22,21 @@ namespace QAP.CharacterUserInterface
             var exponentialOptions = RpnsRaitoMaxPatterns
                 .Select(raitomax => new RpnsOption(RpnsOption.RaitoType.ExponentialUpdate, raitoMin: RpnsRaitoMin, raitoMax: raitomax));
 
-            var options = fixedOptions.Concat(linerOptions).Concat(exponentialOptions)
+            var rpnsOptions = fixedOptions.Concat(linerOptions).Concat(exponentialOptions)
                 .ToDictionary(option => option.ToString(), option => option);
+            var selectedRpnsOptions = await CUIModel.Input(rpnsOptions);
+            var rpnsSearches = selectedRpnsOptions.Select(option => new RandomPartialNeighborhoodSearch(option));
 
-            var selectedOptions = await CUIModel.Input(options);
+            // Tabu
+            var tabuOptions = TabuListLengthPatterns
+                .Select(length => new TabuSearch.TabuOption { Type = TabuSearch.TabuOption.TabuListType.ListLength, TabuSize = length })
+                .ToDictionary(option => option.ToString(), option => option);
+            var selectedTabuOptions = await CUIModel.Input(tabuOptions);
+            var tabuSearches = selectedTabuOptions.Select(option => new TabuSearch(option));
 
-            var result = selectedOptions
-                .Select(option => new RandomPartialNeighborhoodSearch(option))
-                .Concat(new List<ISearch> { new LocalSearch(), new TabuSearch() })
+            return rpnsSearches.Concat<ISearch>(tabuSearches)
+                .Concat(new ISearch[] { new LocalSearch() })
                 .ToList();
-
-            return result;
         }
     }
 
