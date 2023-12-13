@@ -30,9 +30,34 @@ namespace QAP.CharacterUserInterface
             // Tabu
             var tabuOptions = TabuListLengthPatterns
                 .Select(length => new TabuSearch.TabuOption { Type = TabuSearch.TabuOption.TabuListType.ListLength, TabuSize = length })
+                .Append(new TabuSearch.TabuOption { Type = TabuSearch.TabuOption.TabuListType.OrderLength })
                 .ToDictionary(option => option.ToString(), option => option);
             var selectedTabuOptions = await CUIModel.Input(tabuOptions);
-            var tabuSearches = selectedTabuOptions.Select(option => new TabuSearch(option));
+            var tabuSearches = new List<TabuSearch>();
+            foreach (var option in selectedTabuOptions)
+            {
+                switch (option.Type)
+                {
+                    case TabuSearch.TabuOption.TabuListType.OrderLength:
+                        tabuSearches.AddRange(new List<TabuSearch>
+                            {
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.OrderLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.Factory}),
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.OrderLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.Location}),
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.OrderLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.FactoryAndLocation}),
+                            });
+                        break;
+                    case TabuSearch.TabuOption.TabuListType.ListLength:
+                        tabuSearches.AddRange(new List<TabuSearch>
+                            {
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.ListLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.Factory, TabuSize = option.TabuSize}),
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.ListLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.Location, TabuSize = option.TabuSize}),
+                                new TabuSearch(new TabuSearch.TabuOption{ Type = TabuSearch.TabuOption.TabuListType.ListLength, SearchType = TabuSearch.TabuOption.TabuListSearchType.FactoryAndLocation, TabuSize = option.TabuSize}),
+                            });
+                        break;
+                    default:
+                        throw new Exception("TabuListの型に未知の型が代入されています");
+                }
+            }
 
             return rpnsSearches.Concat<ISearch>(tabuSearches)
                 .Concat(new ISearch[] { new LocalSearch() })
