@@ -10,7 +10,7 @@ namespace QAP.CharacterUserInterface
         private readonly float RpnsRaitoMin = 0.005f;
         private readonly float[] RpnsRaitoMaxPatterns = new float[] {0.005f, 0.01f, 0.015f, 0.02f, 0.03f, 0.05f, 0.07f, 0.1f, 0.15f, 0.2f, 0.25f, 0.3f, 0.35f, 0.4f};
 
-        private readonly int[] TabuListLengthPatterns = new int[] { 3, 5, 7, 11, 13, 17, 23 };
+        private readonly int[] TabuListLengthPatterns = new int[] { 3, 5, 7, 11, 13, 17, 23, 29, 37, 47 };
 
         public async Task<IReadOnlyList<ISearch>> ReadAddaptSearchModels()
         {
